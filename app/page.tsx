@@ -22,24 +22,6 @@ export default function Home() {
     setNewTask("");
   }
 
-  function loadTasks() {
-    fetch("http://localhost:8000/tasks")
-      .then((res) => res.json())
-      .then((data) => {
-        if (activeFilter === "all") {
-          setTasks(data);
-        } else if (activeFilter === "active") {
-          setTasks(
-            data.filter((task: { isChecked: boolean }) => !task.isChecked)
-          );
-        } else {
-          setTasks(
-            data.filter((task: { isChecked: boolean }) => task.isChecked)
-          );
-        }
-      });
-  }
-
   function handleAllClick() {
     setActiveFilter("all");
     loadTasks();
@@ -53,6 +35,23 @@ export default function Home() {
   function handleCompletedClick() {
     setActiveFilter("completed");
     loadTasks();
+  }
+  function loadTasks() {
+    fetch("http://localhost:8000/tasks")
+      .then((res) => res.json())
+      .then((data) => {
+        if (activeFilter === "all") {
+          setTasks(data);
+        } else if (activeFilter === "active") {
+          setTasks(
+            data.filter((task: { isChecked: boolean }) => !task.isChecked)
+          );
+        } else if (activeFilter === "completed") {
+          setTasks(
+            data.filter((task: { isChecked: boolean }) => task.isChecked)
+          );
+        }
+      });
   }
 
   async function deleteTask(id: string) {
