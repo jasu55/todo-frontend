@@ -7,6 +7,7 @@ export default function Home() {
   const [tasks, setTasks] = useState<
     { id: string; name: string; isChecked: boolean }[]
   >([]);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   async function CreateNewTask() {
     await fetch("http://localhost:8000/tasks", {
@@ -25,8 +26,33 @@ export default function Home() {
     fetch("http://localhost:8000/tasks")
       .then((res) => res.json())
       .then((data) => {
-        setTasks(data);
+        if (activeFilter === "all") {
+          setTasks(data);
+        } else if (activeFilter === "active") {
+          setTasks(
+            data.filter((task: { isChecked: boolean }) => !task.isChecked)
+          );
+        } else {
+          setTasks(
+            data.filter((task: { isChecked: boolean }) => task.isChecked)
+          );
+        }
       });
+  }
+
+  function handleAllClick() {
+    setActiveFilter("all");
+    loadTasks();
+  }
+
+  function handleActiveClick() {
+    setActiveFilter("active");
+    loadTasks();
+  }
+
+  function handleCompletedClick() {
+    setActiveFilter("completed");
+    loadTasks();
   }
 
   async function deleteTask(id: string) {
@@ -68,6 +94,24 @@ export default function Home() {
     loadTasks();
   }
 
+  // function handleAllClick() {
+  //   setActiveFilter("all");
+  //   setFilteredTasks(tasks);
+  //   loadTasks();
+  // }
+
+  // function handleActiveClick() {
+  //   setActiveFilter("active");
+  //   setFilteredTasks(tasks.filter((task) => !task.isChecked));
+  //   loadTasks();
+  // }
+
+  // function handleCompletedClick() {
+  //   setActiveFilter("completed");
+  //   setFilteredTasks(tasks.filter((task) => task.isChecked));
+  //   loadTasks();
+  // }
+
   useEffect(() => {
     loadTasks();
   }, []);
@@ -93,8 +137,31 @@ export default function Home() {
           Add
         </button>
       </div>
+      <div>
+        <button
+          className={`btn ${activeFilter === "all" ? "btn-active" : ""}`}
+          onClick={handleAllClick}
+        >
+          All
+        </button>
+        <button
+          className={`btn ${activeFilter === "active" ? "btn-active" : ""}`}
+          onClick={handleActiveClick}
+        >
+          Active
+        </button>
+        <button
+          className={`btn ${activeFilter === "completed" ? "btn-active" : ""}`}
+          onClick={handleCompletedClick}
+        >
+          Completed
+        </button>
+      </div>
       {tasks.map((task) => (
-        <div className="card p-4 border border-base-300 mt-4 " key={task.id}>
+        <div
+          className="card p-4 border border-base-300 mt-4 w-250"
+          key={task.id}
+        >
           <div className="flex items-center gap-1">
             <input
               type="checkbox"
@@ -125,4 +192,3 @@ export default function Home() {
     </div>
   );
 }
-// xxaxa
