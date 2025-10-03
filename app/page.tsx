@@ -1,6 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
+import { create } from "domain";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -109,7 +110,7 @@ export default function Home() {
 
   useEffect(() => {
     loadAllTasks();
-  }, [loadAllTasks]);
+  }, [CreateNewTask, handleDeleteCompletedTasks]);
 
   return (
     <div className="flex justify-center w-screen h-screen bg-[#F3F4F6] ">
