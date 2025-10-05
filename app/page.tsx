@@ -27,19 +27,6 @@ export default function Home() {
     loadAllTasks();
   }
 
-  function handleAllClick() {
-    setActiveFilter("all");
-  }
-
-  function handleActiveClick() {
-    setActiveFilter("active");
-    console.log(activeFilter);
-  }
-
-  function handleCompletedClick() {
-    setActiveFilter("completed");
-  }
-
   function loadTasks() {
     fetch(`http://localhost:8000/tasks?status=${activeFilter}`)
       .then((res) => res.json())
@@ -136,30 +123,18 @@ export default function Home() {
           </button>
         </div>
         <div className="flex gap-2 w-full ">
-          <button
-            className={`btn  rounded-md ${
-              activeFilter === "all" ? "bg-blue-400" : ""
-            }`}
-            onClick={handleAllClick}
-          >
-            All
-          </button>
-          <button
-            className={`btn rounded-md ${
-              activeFilter === "active" ? "bg-blue-400" : ""
-            }`}
-            onClick={handleActiveClick}
-          >
-            Active
-          </button>
-          <button
-            className={`btn rounded-md ${
-              activeFilter === "completed" ? "bg-blue-400" : ""
-            }`}
-            onClick={handleCompletedClick}
-          >
-            Completed
-          </button>
+          {["all", "active", "completed"].map((filter) => (
+            <button
+              key={filter}
+              className={`btn  rounded-md ${
+                activeFilter === filter ? "bg-blue-400" : ""
+              }`}
+              onClick={() => setActiveFilter(filter)}
+              disabled={activeFilter === filter}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
         {tasks.length === 0 && <div className="mt-4">No tasks</div>}
         {tasks.map((task) => (
