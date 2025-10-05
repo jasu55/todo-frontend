@@ -1,7 +1,6 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { create } from "domain";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -25,6 +24,7 @@ export default function Home() {
 
     loadTasks();
     setNewTask("");
+    loadAllTasks();
   }
 
   function handleAllClick() {
@@ -74,9 +74,8 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name: newName }),
-      }).then(() => {
-        loadTasks();
       });
+      loadTasks();
     }
   }
 
@@ -110,7 +109,7 @@ export default function Home() {
 
   useEffect(() => {
     loadAllTasks();
-  }, [CreateNewTask, handleDeleteCompletedTasks]);
+  }, [activeFilter]);
 
   return (
     <div className="flex justify-center w-screen h-screen bg-[#F3F4F6] ">
@@ -200,8 +199,11 @@ export default function Home() {
         <div className="flex w-full items-center justify-around ">
           {tasks.length > 0 && (
             <div>
-              {tasks.filter((task) => task.isChecked).length} of{" "}
-              {allTasks.length} tasks completed
+              {activeFilter === "active"
+                ? allTasks.length -
+                  tasks.filter((task) => !task.isChecked).length
+                : tasks.filter((task) => task.isChecked).length}{" "}
+              of {allTasks.length} tasks completed
             </div>
           )}
           <button className="text-red-500" onClick={handleDeleteCompletedTasks}>
